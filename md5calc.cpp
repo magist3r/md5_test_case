@@ -178,12 +178,12 @@ int main(int argc, char** argv)
 
 		calc.finish();
 
-		vector<uint8_t> result;
+		vector<uint8_t> res;
 		auto & map = calc.result();
 		for (auto it = map.begin(); it != map.end(); ++it)
-			result.insert(result.end(), it->second.get(), it->second.get() + MD5_DIGEST_LENGTH);
+			res.insert(res.end(), it->second.get(), it->second.get() + MD5_DIGEST_LENGTH);
 			
-		output.write(reinterpret_cast<char*>(result.data()), result.size());
+		output.write(reinterpret_cast<char*>(res.data()), res.size());
 	}
 	catch (const std::invalid_argument& e)
 	{
