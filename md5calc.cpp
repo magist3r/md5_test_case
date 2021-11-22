@@ -20,9 +20,11 @@ using namespace std;
 class hash_calc
 {
 public:
-	hash_calc(size_t block_size) : m_block_size(block_size) 
+	hash_calc(size_t block_size = 0x100000, unsigned int thread_count = thread::hardware_concurrency()) : m_block_size(block_size)
 	{
-		for (unsigned int i = 0; i < thread::hardware_concurrency(); ++i)
+		if (thread_count < 1) thread_count = 1; // Create at least one worker thread
+		
+		for (unsigned int i = 0; i < thread_count; ++i)
 			m_threads.emplace_back(&hash_calc::run, this);
 	}
 	void run()
