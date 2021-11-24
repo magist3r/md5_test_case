@@ -39,10 +39,7 @@ public:
 				{
 					auto& pair = m_queue.front();
 					if (pair.first == -1 && !pair.second) // exit condition for terminating
-					{
-						m_cv.notify_one();
 						break;
-					}
 
 					if (!pair.second)
 						throw runtime_error("Got empty block # " + to_string(pair.first));
@@ -75,7 +72,7 @@ public:
 			lock_guard<mutex> lock(m_mutex);
 			m_queue.push(std::move(pair));
 		}
-		m_cv.notify_all();
+		m_cv.notify_one();
 	}
 	void join()
 	{
