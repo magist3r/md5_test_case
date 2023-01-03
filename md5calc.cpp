@@ -170,7 +170,8 @@ int main(int argc, char** argv)
 		while (input)
 		{
 			auto buffer = make_unique<uint8_t[]>(block_size); // zero-initializes buffer
-			input.read(reinterpret_cast<char *>(buffer.get()), block_size);
+			if (!input.read(reinterpret_cast<char*>(buffer.get()), block_size))
+				throw runtime_error("Cannot read block " + to_string(block_number) + " from input file " + input_name);
 			
 			calc.add_block({ block_number++, std::move(buffer) });
 		}
@@ -182,7 +183,8 @@ int main(int argc, char** argv)
 		for (auto it = map.begin(); it != map.end(); ++it)
 			res.insert(res.end(), it->second.get(), it->second.get() + MD5_DIGEST_LENGTH);
 			
-		output.write(reinterpret_cast<char*>(res.data()), res.size());
+		if (!output.write(reinterpret_cast<char*>(res.data()), res.size()))
+			throw runtime_error("Cannot write to output file " + output_name);
 	}
 	catch (const std::invalid_argument& e)
 	{
